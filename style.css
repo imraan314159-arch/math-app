@@ -215,14 +215,30 @@ header h1 {
   background-color: #999;
   cursor: not-allowed;
 }
+
 .profile-field {
-  margin-bottom: 15px;
+  display: flex;                 /* Arrange children side by side */
+  align-items: center;           /* Vertically align them */
+  justify-content: space-between;/* Space between label & input */
+  
+  margin: 15px;
+  padding: 10px;
+  background-color: #1f1f1f;
+  color: #cfcfcf;
+  border-radius: 8px;
 }
-.profile-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
+
+.profile-field label {
+  flex: 1;                        /* Take up left space */
 }
+
+.profile-field input {
+  flex: 2;                        /* Take up more space on right */
+  max-width: 250px;               /* Prevent input from getting too big */
+}
+
+
+
 .sidebar,.sidebar nav a:hover, .sidebar nav a.active,
 .main,
 .topnav, .topnav a:hover, .topnav a.active,
