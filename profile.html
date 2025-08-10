@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Profile - Math App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="sidebar">
+  <h1 align = "center" class="logo">Math App</h1>
+    <nav>
+      <a href="index.html" data-tab="home">Home</a>
+      <a href="#" data-tab="integers">Integers</a>
+      <a href="#" data-tab="distributivity">Distributivity</a>
+      <a href="#" data-tab="exponents">Exponents</a>
+      <a href="#" data-tab="factorization">Factorization</a>
+      <a href="#" data-tab="graphs">Graphs</a>
+      <a href="#" data-tab="patterns">Patterns</a>
+      <a href="profile.html" class="active">Profile</a>
+      <a href="temp.html">Temp</a>
+    </nav>
+    <button class="logout-btn" id="logout-btn">Logout</button>
+  </div>
+
+  <div class="main">
+    <header>
+      <h1>Your Profile</h1>
+    </header>
+
+    <div class="content-area">
+      <p style="text-align:center; font-style: italic; margin-bottom: 25px;">
+        Welcome back! Here is your profile information.
+      </p>
+
+      <section class="profile-card" style="background:#fff; padding: 25px; border-radius: 8px; max-width: 480px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div class="profile-field">
+          <span class="profile-label">First Name:</span>
+          <span id="name">Loading...</span>
+        </div>
+
+        <div class="profile-field">
+          <span class="profile-label">Surname:</span>
+          <span id="surname">Loading...</span>
+        </div>
+
+        <div class="profile-field">
+          <span class="profile-label">Age:</span>
+          <span id="age">Loading...</span>
+        </div>
+
+        <div class="profile-field">
+          <span class="profile-label">Grade:</span>
+          <span id="grade">Loading...</span>
+        </div>
+
+        <div class="profile-field">
+          <span class="profile-label">School:</span>
+          <span id="school">Loading...</span>
+        </div>
+      </section>
+
+      <div id="status" style="text-align:center; margin-top: 20px; color: red; font-weight: bold;"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAOGEA--xSTgxUwTGLnt__P6twu5zta0Rc",
+      authDomain: "algebruh-d156a.firebaseapp.com",
+      projectId: "algebruh-d156a",
+      storageBucket: "algebruh-d156a.appspot.com",
+      messagingSenderId: "325434204279",
+      appId: "1:325434204279:web:93057eaa7a0b3d9e5da672",
+      measurementId: "G-88RCTDRWZH",
+      databaseURL: "https://algebruh-d156a-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    function emailToId(email) {
+      return email.replace(/\./g, '_').toLowerCase();
+    }
+
+    const statusDiv = document.getElementById('status');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const userId = emailToId(user.email);
+      try {
+        const snapshot = await get(ref(db, userId));
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          document.getElementById('name').textContent = data.name || 'N/A';
+          document.getElementById('surname').textContent = data.surname || 'N/A';
+          document.getElementById('age').textContent = data.age || 'N/A';
+          document.getElementById('grade').textContent = data.grade || 'N/A';
+          document.getElementById('school').textContent = data.school || 'N/A';
+          statusDiv.textContent = '';
+        } else {
+          statusDiv.textContent = 'No profile data found.';
+        }
+      } catch (error) {
+        statusDiv.textContent = 'Failed to load profile: ' + error.message;
+      }
+    });
+
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      } catch (error) {
+        alert('Error signing out: ' + error.message);
+      }
+    });
+  </script>
+
+</body>
+</html>

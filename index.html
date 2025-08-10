@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Math App - Home</title>
+
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+
+  <div class="sidebar">
+  <h1 align = "center" class="logo">Math App</h1>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="#" data-tab="integers">Integers</a>
+      <a href="distributivity.html">Distributivity</a>
+      <a href="#" data-tab="exponents">Exponents</a>
+      <a href="#" data-tab="factorization">Factorization</a>
+      <a href="#" data-tab="graphs">Graphs</a>
+      <a href="#" data-tab="patterns">Patterns</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+    <button class="logout-btn" id="logout-btn">Logout</button>
+  </div>
+
+  <div class="main">
+    <header>
+      <h1 id="page-title">Home</h1>
+    </header>
+    <div id="content-area">
+      <p>Welcome to the Math App! Select a topic from the sidebar.</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAOGEA--xSTgxUwTGLnt__P6twu5zta0Rc",
+      authDomain: "algebruh-d156a.firebaseapp.com",
+      projectId: "algebruh-d156a",
+      storageBucket: "algebruh-d156a.appspot.com",
+      messagingSenderId: "325434204279",
+      appId: "1:325434204279:web:93057eaa7a0b3d9e5da672",
+      measurementId: "G-88RCTDRWZH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Redirect to login if not authenticated
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Sidebar navigation handling (only tabs with data-tab attribute)
+    const links = document.querySelectorAll('.sidebar nav a[data-tab]');
+    const pageTitle = document.getElementById('page-title');
+    const contentArea = document.getElementById('content-area');
+
+    links.forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const tab = link.getAttribute('data-tab');
+        pageTitle.textContent = tab.charAt(0).toUpperCase() + tab.slice(1);
+
+        // Simple content for demonstration; replace with your actual content
+        switch(tab) {
+          case 'home':
+            contentArea.innerHTML = '<p>Welcome to the Math App! Select a topic from the sidebar.</p>';
+            break;
+          case 'integers':
+            contentArea.innerHTML = '<h2>Integers</h2><p>Learn about positive and negative numbers.</p>';
+            break;
+          case 'distributivity':
+            contentArea.innerHTML = '<h2>Distributivity</h2><p>Understand the distributive property in algebra.</p>';
+            break;
+          case 'exponents':
+            contentArea.innerHTML = '<h2>Exponents</h2><p>Explore powers and indices.</p>';
+            break;
+          case 'factorization':
+            contentArea.innerHTML = '<h2>Factorization</h2><p>Break down expressions into factors.</p>';
+            break;
+          case 'graphs':
+            contentArea.innerHTML = '<h2>Graphs</h2><p>Visualize data and functions.</p>';
+            break;
+          case 'patterns':
+            contentArea.innerHTML = '<h2>Patterns</h2><p>Identify and analyze mathematical patterns.</p>';
+            break;
+          default:
+            contentArea.innerHTML = '<p>Content not available.</p>';
+        }
+      });
+    });
+
+    // Highlight active link based on current URL
+    function setActiveLink() {
+      const currentPath = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.sidebar nav a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === currentPath) {
+          link.classList.add('active');
+        } else if (link.hasAttribute('data-tab')) {
+          link.classList.remove('active');
+        }
+      });
+    }
+    setActiveLink();
+
+    // Logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      } catch (error) {
+        alert('Error signing out: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

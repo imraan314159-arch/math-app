@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Example with Navigation</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+  }
+  /* Side navigation */
+
+    .sidebar {
+      width: 220px;
+      background-color: #222;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+      box-sizing: border-box;
+      transition: width 0.3s;
+    }
+    .sidebar h2.logo {
+      text-align: center;
+      margin: 0 0 20px;
+      user-select: none;
+      font-size: 1.5em;
+    }
+    .sidebar nav a {
+      padding: 12px 20px;
+      text-decoration: none;
+      color: white;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+    .sidebar nav a:hover, .sidebar nav a.active {
+      background-color: #4285f4;
+    }
+    .logout-btn {
+      margin-top: auto;
+      padding: 12px 20px;
+      background: #b33;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1em;
+      width: 100%;
+      text-align: left;
+    }
+    .logout-btn:hover {
+      background: #922;
+    }
+    /* Main content area */
+    .main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background: #f9f9f9;
+      overflow: hidden;
+    }
+
+    /* Top horizontal navbar for subtopics */
+    .topnav {
+      background-color: #333;
+      overflow-x: auto;
+      white-space: nowrap;
+      display: flex;
+    }
+    .topnav a {
+      display: inline-block;
+      color: white;
+      text-align: center;
+      padding: 12px 18px;
+      text-decoration: none;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+      white-space: nowrap;
+    }
+    .topnav a:hover, .topnav a.active {
+      background-color: #4285f4;
+    }
+
+    /* Content below top nav */
+    .content-area {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: white;
+    }
+
+    header {
+      padding: 20px;
+      font-size: 1.8em;
+      font-weight: bold;
+      background: #eee;
+      border-bottom: 1px solid #ccc;
+      user-select: none;
+    }
+    
+  /* Video */
+  .video-container {
+    max-width: 600px;
+    margin-bottom: 20px;
+  }
+  /* Example steps */
+  #questionDisplay {
+    background: #f9f9f9;
+    padding: 10px;
+    min-height: 200px;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Side navigation -->
+  <div class="sidebar">
+    <h2 class="logo">Math App</h2>
+    <nav>
+      <a href="#" class="active" data-tab="home">Home</a>
+      <a href="#" data-tab="integers">Integers</a>
+      <a href="distributivity.html">Distributivity</a>
+      <a href="#" data-tab="exponents">Exponents</a>
+      <a href="#" data-tab="factorization">Factorization</a>
+      <a href="#" data-tab="graphs">Graphs</a>
+      <a href="#" data-tab="patterns">Patterns</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+    <button class="logout-btn" id="logout-btn">Logout</button>
+  </div>
+
+<!-- Main content -->
+  <div class="main">
+    <!-- Place topnav inside main -->
+    <div class="topnav" id="subtopics-nav">
+
+      <a href="#" class="active" data-subtopic="monomial_x_monomial">Monomial × Monomial</a>
+      <a href="#" data-subtopic="monomial_x_binomial">Monomial × Binomial</a>
+      <a href="#" data-subtopic="binomial_x_binomial">Binomial × Binomial</a>
+      <a href="#" data-subtopic="binomial_squared">Binomial Squared</a>
+      <a href="#" data-subtopic="binomial_conjugated">Binomial Conjugated Pairs</a>
+      <a href="#" data-subtopic="binomial_coefficient">Binomial Coefficient</a>
+
+    </div>
+
+    <!-- Main content below topnav -->
+    <div class="video-container">
+        <video controls width="100%" style="max-width:600px; margin-top: 20px;">
+            <source src="https://storage.googleapis.com/middle_school/1_Integers_Same_signs.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <h2>Worked Example</h2>
+    <div id="questionDisplay"></div>
+    <button id="nextLineBtn">Press Next</button>
+  </div>
+
+
+  
+
+    
+<script>
+  const questions = [
+    [
+      "\\((\\textcolor{red}{x} \\; \\textcolor{blue}{-1})^2\\)",
+      "Write down the brackets twice"
+    ],
+    [
+      "\\((\\textcolor{red}{x} \\; \\textcolor{blue}{-1})(\\textcolor{green}{x - 1})\\)",
+      "Now multiply each term of the first bracket with the second bracket"
+    ],
+    [
+      "\\(\\textcolor{red}{x}(\\textcolor{green}{x - 1})\\)",
+      "Multiply the first term (red) with the second bracket (green)"
+    ],
+    [
+      "\\(\\textcolor{red}{x^2 - x}\\)",
+      "After multiplying the first term"
+    ],
+    [
+      "\\(\\textcolor{blue}{-1}(\\textcolor{green}{x - 1})\\)",
+      "Multiply the second term (blue) with the second bracket (green)"
+    ],
+    [
+      "\\(\\textcolor{blue}{-x + 1}\\)",
+      "After multiplying the second term"
+    ],
+    [
+      "\\(\\textcolor{red}{x^2 - x} \\; \\textcolor{blue}{- x + 1}\\)",
+      "Combine the results"
+    ],
+    [
+      "\\(x^2 - 2x + 1\\)",
+      "Simplify by adding like terms"
+    ]
+  ];
+
+  let currentLineIndex = -1;
+  const questionDisplay = document.getElementById("questionDisplay");
+  const nextLineBtn = document.getElementById("nextLineBtn");
+
+  nextLineBtn.addEventListener("click", async () => {
+    currentLineIndex++;
+    if (currentLineIndex < questions.length) {
+      const newStep = document.createElement("div");
+      newStep.innerHTML = `
+        <p style="color: ${currentLineIndex === 0 ? 'black' : 'inherit'}">
+          $${questions[currentLineIndex][0]}$
+        </p>
+        <small>${questions[currentLineIndex][1]}</small>
+      `;
+      questionDisplay.appendChild(newStep);
+      await MathJax.typesetPromise([newStep]);
+      questionDisplay.scrollTop = questionDisplay.scrollHeight;
+      if (currentLineIndex === questions.length - 1) {
+        nextLineBtn.disabled = true;
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Profile - Math App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .signup-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 350px;
+    }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    input[disabled] {
+      background: #eee;
+    }
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      font-size: 1em;
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #357ae8;
+    }
+    #status {
+      margin-top: 20px;
+      min-height: 20px;
+      font-size: 0.9em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h2>Create Your Profile</h2>
+    <form id="signup-form">
+      <label for="email">Email</label>
+      <input type="email" id="email" disabled />
+
+      <label for="name">First Name</label>
+      <input type="text" id="name" required />
+
+      <label for="surname">Surname</label>
+      <input type="text" id="surname" required />
+
+      <label for="age">Age</label>
+      <input type="number" id="age" min="5" max="120" required />
+
+      <label for="grade">Grade</label>
+      <select id="grade" required>
+        <option value="" disabled selected>Select your grade</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+
+      <label for="school">School</label>
+      <input type="text" id="school" required />
+
+      <button type="submit">Create Profile</button>
+    </form>
+    <div id="status"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // Firebase config - replace with your own config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAOGEA--xSTgxUwTGLnt__P6twu5zta0Rc",
+      authDomain: "algebruh-d156a.firebaseapp.com",
+      projectId: "algebruh-d156a",
+      storageBucket: "algebruh-d156a.appspot.com",
+      messagingSenderId: "325434204279",
+      appId: "1:325434204279:web:93057eaa7a0b3d9e5da672",
+      measurementId: "G-88RCTDRWZH",
+      databaseURL: "https://algebruh-d156a-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById('email');
+    const form = document.getElementById('signup-form');
+    const statusDiv = document.getElementById('status');
+
+    function emailToId(email) {
+      return email.replace(/\./g, '_').toLowerCase();
+    }
+
+    // Prefill email from query param or from current user
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        emailInput.value = user.email;
+      } else {
+        // If no user logged in, redirect to login page
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Also try to prefill email from URL param if available (fallback)
+    const emailFromParam = getQueryParam('email');
+    if (emailFromParam && !emailInput.value) {
+      emailInput.value = emailFromParam;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusDiv.textContent = '';
+      const user = auth.currentUser;
+      if (!user) {
+        statusDiv.style.color = 'red';
+        statusDiv.textContent = 'You must be logged in.';
+        return;
+      }
+
+      const userId = emailToId(user.email);
+      const profileData = {
+        name: document.getElementById('name').value.trim(),
+        surname: document.getElementById('surname').value.trim(),
+        age: parseInt(document.getElementById('age').value, 10),
+        grade: document.getElementById('grade').value,
+        school: document.getElementById('school').value.trim()
+      };
+
+      if (!profileData.name || !profileData.surname || !profileData.age || !profileData.grade || !profileData.school) {
+        statusDiv.style.color = 'red';
+        statusDiv.textContent = 'Please fill all fields.';
+        return;
+      }
+
+      try {
+        await set(ref(db, userId), profileData);
+        statusDiv.style.color = 'green';
+        statusDiv.textContent = 'Profile created successfully! Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'profile.html';
+        }, 1500);
+      } catch (error) {
+        statusDiv.style.color = 'red';
+        statusDiv.textContent = 'Failed to create profile: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
