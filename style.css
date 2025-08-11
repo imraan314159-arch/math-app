@@ -128,21 +128,22 @@ header h1 {
 
     
   /* Video */
-  .video-container {
-    max-width: 900px;               /* limit width for readability */
-    margin: 20px auto;              /* center horizontally with vertical spacing */
-    background-color: #1f1f1f;      /* dark background to fit theme */
-    padding: 16px;                  /* some padding inside container */
-    border-radius: 8px;             /* rounded corners */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);  /* subtle but noticeable shadow */
-  }
+.video-container {
+  max-width: 900px;                 /* limit container width */
+  margin: 20px auto;                /* center horizontally */
+  background-color: #1f1f1f;        /* background color */
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+}
 
-  .video-container video {
-    width: 100%;                   /* make video fill container width */
-    border-radius: 6px;            /* slightly round video edges */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5); /* soft shadow on video */
-    display: block;                /* remove inline gaps */
-  }
+.video-container video {
+  width: 100%;                      /* video fills container */
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  display: block;
+}
+
 
   .step {
   display: flex;
@@ -153,12 +154,13 @@ header h1 {
 
 .step .equation {
   flex: 1;
-  font-size: 1.2em;
+  font-size: 1.5em;
+  color: #eee;
 }
 
 .step .explanation {
   flex: 1;
-  color: #555;
+  color: #eee;
   font-size: 1em;
   white-space: normal;
 }
@@ -177,7 +179,7 @@ header h1 {
 #questionDisplay {
   /* keep whatever styles you have */
   
-  background-color: #000000; /* Dark background for content */
+  background-color: #1f1f1f;      /* dark background to fit theme */
   max-width: 900px;                /* limit width for readability */
   margin: 30px auto;               /* center horizontally with vertical spacing */
   padding: 20px 30px;              /* ample padding for content */
